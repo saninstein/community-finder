@@ -16,7 +16,8 @@ URLS = [
 	'https://bitcoin.org/',
 	'https://www.ethereum.org/',
 	'https://ripple.com/',
-	'https://www.bitcoincash.org/'
+	'https://www.bitcoincash.org/',
+	'http://dogecoin.com/'
 ]
 
 
@@ -53,9 +54,13 @@ class CommunityFinderTests:
 			if 'community' in project:
 				r['community'] = project['community']
 
+			# using without page download 
 			c = CommunityFinder('')
-			c.raw_page = json.dumps(project) 
+			c.raw_page = json.dumps(project)
 			c.find()
+			# c.data <= here your results
+
+
 			r['finded'] = c.data['community']
 			delta_community = 0
 			delta_count = 0

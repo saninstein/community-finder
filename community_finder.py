@@ -23,6 +23,7 @@ class CommunityFinder(CommunityEntryValidators):
 				regex = getattr(cls, x)
 				if 're_find' in regex:
 					break
+				# modify pattern for fulltext search
 				find_pattern = regex['re'].pattern.replace('$', '').replace('^', '')
 				if x == 'medium_regex':
 					# chr '@' is very important
@@ -73,27 +74,29 @@ class CommunityFinder(CommunityEntryValidators):
 					raise HttpException(f'HTTP Error: {res.status}')
 				return await res.text()
 
-
 	def update_community(self, community, data):
+		# add links
 		self.data['community'][community] = data
 
 	def find_community(self, community_name):
 		matches = self.get_matches(community_name)
 		if not matches:
 			return
+		# get url constructor for community
 		url_constructor = getattr(self, f'_{community_name}_constructor')
+		# create valid urls
 		data = [url_constructor(groups) for groups in matches]
+		# clean data, find uniq urls and remove links to static
 		data = self.clean_data(data)
 		self.update_community(community_name, data)
 
 	def clean_data(self, data):
 		cleaned_data = set()
-		
+
 		for url in data:
-			if any(url.endswith(x) for x in ['.css', '.js']):
+			if any(url.endswith(x) for x in ['.css', '.js']):  # if static
 				continue
 			cleaned_data.add(url)
-		
 		return list(cleaned_data)
 
 	def find(self):
@@ -106,6 +109,7 @@ class CommunityFinder(CommunityEntryValidators):
 			self.find_community(community)
 
 	async def find_communities(self):
+		# run this method for fetch page and find social links
 		try:
 			self.raw_page = await self.fetch()
 			self.find()
@@ -114,6 +118,8 @@ class CommunityFinder(CommunityEntryValidators):
 		return self.data
 
 	# url constructors:
+	# override if the link format changes
+
 	def _facebook_constructor(self, x):
 		return f'{x[1]}/{x[2]}'
 
