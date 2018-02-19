@@ -5,7 +5,7 @@ import asyncio
 
 
 def test(test):
-	def _wrapper(self = None):
+	def _wrapper(self=None):
 		print('-' * 5, test.__name__, '-' * 5)
 		test(self) 
 		print('-' * 5, test.__name__, ' END', '-' * 5, '\n')
