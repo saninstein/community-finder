@@ -25,18 +25,11 @@ class CommunityFinder(CommunityEntryValidators):
 					break
 				# modify pattern for fulltext search
 				find_pattern = regex['re'].pattern.replace('$', '').replace('^', '')
-				if x == 'medium_regex':
-					# chr '@' is very important
-					# if '@' in url, then this target is collection, otherwise user
-
-					# add group to medium regex
-					split = find_pattern.split('\@')
-					find_pattern = split[0] + '(\@)' + split[1]
 				regex['re_find'] = re.compile(find_pattern)
 				setattr(cls, x, regex)
 
 	@classmethod
-	def init_session(cls, session=None):
+	def init_session(cls, session=None, referer='google.com'):
 		cls.semaphore = asyncio.Semaphore(5)
 		async def _init_session():
 			if cls.session:
@@ -45,7 +38,7 @@ class CommunityFinder(CommunityEntryValidators):
 			if session:
 				cls.session = session
 			else:
-				headers = helpers.chrome_headers('google.com')
+				headers = helpers.chrome_headers(referer)
 				cls.session = aiohttp.ClientSession(headers=headers)
 		asyncio.get_event_loop().run_until_complete(_init_session())
 
@@ -139,7 +132,7 @@ class CommunityFinder(CommunityEntryValidators):
 		return f"{x[1]}/{x[2]}{x[3]}"
 
 	def _medium_constructor(self, x):
-		return f'medium.com/{x[1]}{x[2]}'
+		return f'medium.com/{x[1]}'
 
 	def _steemit_constructor(self, x):
 		return f'steemit.com/@{x[1]}'

@@ -42,6 +42,14 @@ class CommunityFinderTests:
 		helpers.print_dict(res)
 
 	@test
+	def test_medium(self):
+		c = CommunityFinder('')
+		c.raw_page = 'medium.com/Remme medium.com/@remme'
+		c.find()
+
+		print(c.data)
+
+	@test
 	def test_on_coins(self):
 		projects = json.load(open('coins.json'))
 		total_error = 0

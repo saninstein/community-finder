@@ -28,7 +28,7 @@ class CommunityEntryValidators:
         "resource_id_position": 3
     }
     medium_regex = {
-        "re": re.compile(r'^(www\.)?medium\.com\/\@?([a-zA-Z0-9\-\_\.]+)\/?$'),
+        "re": re.compile(r'^(www\.)?medium\.com\/(\@?[a-zA-Z0-9\-\_\.]+)\/?$'),
         "resource_id_position": 1
     }
     steemit_regex = {
